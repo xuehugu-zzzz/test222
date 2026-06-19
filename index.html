@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网页时钟</title>
+    <title>网页时钟-雪狐咕</title>
     <style>
         * {
             margin: 0;
@@ -142,6 +142,144 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
+        .branding {
+            margin-top: 30px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+            letter-spacing: 2px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4),
+                             0 0 10px rgba(255, 255, 255, 0.3);
+            }
+            to {
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4),
+                             0 0 20px rgba(255, 255, 255, 0.6),
+                             0 0 30px rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        .interactive-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .interactive-buttons button {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .interactive-buttons button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .interactive-buttons button:active {
+            transform: scale(0.95);
+        }
+
+        .theme-selector {
+            margin-top: 20px;
+        }
+
+        .theme-selector label {
+            color: white;
+            font-size: 16px;
+            margin-right: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-selector select {
+            padding: 8px 15px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-selector select:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-selector select option {
+            background: #667eea;
+            color: white;
+        }
+
+        .floating-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            color: #333;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.5s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 40px 30px;
@@ -163,11 +301,31 @@
             .date {
                 font-size: 18px;
             }
+
+            .branding {
+                font-size: 22px;
+            }
+
+            .interactive-buttons {
+                gap: 10px;
+            }
+
+            .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="floating-particles" id="particles"></div>
+    <div class="notification" id="notification"></div>
+    
     <div class="container">
+        <div class="branding">雪狐咕-网页时钟</div>
+        
         <div class="digital-clock" id="digitalClock">00:00:00</div>
         <div class="date" id="date">2024年1月1日 星期一</div>
         
@@ -181,6 +339,24 @@
         <div class="mode-toggle">
             <button onclick="toggleClockMode()">切换显示模式</button>
         </div>
+
+        <div class="interactive-buttons">
+            <button onclick="changeClockColor()">🎨 随机颜色</button>
+            <button onclick="toggleAnimation()">⏸️ 暂停/继续</button>
+            <button onclick="showTimeGreeting()">👋 问候</button>
+            <button onclick="copyTime()">📋 复制时间</button>
+        </div>
+
+        <div class="theme-selector">
+            <label for="themeSelect">背景主题：</label>
+            <select id="themeSelect" onchange="changeTheme()">
+                <option value="purple">紫色梦幻</option>
+                <option value="blue">蓝色海洋</option>
+                <option value="pink">粉色浪漫</option>
+                <option value="green">绿色森林</option>
+                <option value="orange">橙色日落</option>
+            </select>
+        </div>
     </div>
 
     <script>
@@ -193,8 +369,25 @@
             numbersDiv.appendChild(span);
         }
 
+        // 生成浮动粒子
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.width = particle.style.height = Math.random() * 10 + 5 + 'px';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        let isPaused = false;
+        let updateInterval;
+
         // 更新时钟
         function updateClock() {
+            if (isPaused) return;
+            
             const now = new Date();
             
             // 数字时钟
@@ -227,11 +420,88 @@
             const analogClock = document.getElementById('analogClock');
             showAnalog = !showAnalog;
             analogClock.style.display = showAnalog ? 'block' : 'none';
+            showNotification(showAnalog ? '已显示模拟时钟' : '已隐藏模拟时钟');
+        }
+
+        // 随机改变时钟颜色
+        function changeClockColor() {
+            const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e91e63'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.getElementById('secondHand').style.background = randomColor;
+            document.querySelector('.clock::before').style.background = randomColor;
+            showNotification('时钟颜色已更换！');
+        }
+
+        // 暂停/继续动画
+        function toggleAnimation() {
+            isPaused = !isPaused;
+            const button = event.target;
+            button.textContent = isPaused ? '▶️ 继续' : '⏸️ 暂停/继续';
+            showNotification(isPaused ? '时钟已暂停' : '时钟已继续');
+        }
+
+        // 显示时间问候
+        function showTimeGreeting() {
+            const hour = new Date().getHours();
+            let greeting = '';
+            if (hour < 6) greeting = '深夜了，注意休息哦！🌙';
+            else if (hour < 9) greeting = '早上好，新的一天开始了！☀️';
+            else if (hour < 12) greeting = '上午好，保持活力！💪';
+            else if (hour < 14) greeting = '中午了，该吃午饭啦！🍱';
+            else if (hour < 18) greeting = '下午好，继续加油！🌤️';
+            else if (hour < 22) greeting = '晚上好，辛苦一天了！🌆';
+            else greeting = '夜深了，早点休息吧！🌃';
+            
+            showNotification(greeting, 3000);
+        }
+
+        // 复制当前时间
+        function copyTime() {
+            const timeText = document.getElementById('digitalClock').textContent;
+            const dateText = document.getElementById('date').textContent;
+            const fullText = `${dateText} ${timeText}`;
+            
+            navigator.clipboard.writeText(fullText).then(() => {
+                showNotification('时间已复制到剪贴板！📋');
+            }).catch(() => {
+                showNotification('复制失败，请手动复制');
+            });
+        }
+
+        // 更改主题
+        const themes = {
+            purple: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            blue: 'linear-gradient(135deg, #0093E9 0%, #80D0C7 100%)',
+            pink: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            green: 'linear-gradient(135deg, #0BA360 0%, #3CBA92 100%)',
+            orange: 'linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 50%, #2BFF88 100%)'
+        };
+
+        function changeTheme() {
+            const theme = document.getElementById('themeSelect').value;
+            document.body.style.background = themes[theme];
+            showNotification('主题已更换！🎨');
+        }
+
+        // 显示通知
+        function showNotification(message, duration = 2000) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
         }
 
         // 初始化和定时更新
         updateClock();
-        setInterval(updateClock, 1000);
+        updateInterval = setInterval(updateClock, 1000);
+
+        // 欢迎消息
+        window.addEventListener('load', () => {
+            setTimeout(() => showTimeGreeting(), 500);
+        });
     </script>
 </body>
 </html>
